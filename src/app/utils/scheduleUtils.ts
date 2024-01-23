@@ -8,7 +8,9 @@ export const createSchedule = ({ totalPage, dailyPage }: PlanType) => {
 
   while (page < totalPage + dailyPage) {
     if (page > totalPage) page = totalPage;
-    result.push(new Schedule(date.toLocaleDateString(), page));
+    result.push(
+      new Schedule(date.toLocaleDateString(), page, undefined, undefined)
+    );
     date.setDate(date.getDate() + 1);
     page += dailyPage;
   }
@@ -20,7 +22,7 @@ export const updateSchedule = (
   plan: PlanType,
   prevSchedule: Schedule[],
   idx: number,
-  readPage: number,
+  readPage: number
 ) => {
   prevSchedule[idx].pageExecute =
     readPage > plan.totalPage ? plan.totalPage : readPage;
@@ -60,7 +62,8 @@ export const updateSchedule = (
         newDate.toLocaleDateString(),
         pagePlanOrigin,
         pagePlanModified,
-      ),
+        undefined
+      )
     );
   } while (pagePlanOrigin != totalPage || pagePlanModified != totalPage);
 
@@ -76,7 +79,7 @@ export const fromObjListToClassList = (obj: ScheduleObjType[]) => {
         el.date,
         el.pagePlanOrigin,
         el.pagePlanModified,
-        el.pageExecute,
-      ),
+        el.pageExecute
+      )
   );
 };

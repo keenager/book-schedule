@@ -1,7 +1,7 @@
-import { Dispatch, FormEvent, SetStateAction, useRef } from "react";
+import { Dispatch, FormEvent, SetStateAction } from "react";
 import { Schedule } from "../models/scheduleModels";
 import { DataType, PlanType } from "../types/scheduleTypes";
-import { createSchedule, updateSchedule } from "../utils/scheduleUtils";
+import { updateSchedule } from "../utils/scheduleUtils";
 
 export default function ScheduleDetail({
   plan,
@@ -32,14 +32,19 @@ export default function ScheduleDetail({
     alert(`${title} 스케줄을 저장하였습니다.`);
   };
 
-  const recalc = (idx: number, e: FormEvent<HTMLFormElement>) => {
+  const recalc = (
+    before: Schedule | undefined,
+    idx: number,
+    e: FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
-    const newSchedule = updateSchedule(
-      plan,
-      list,
-      idx,
-      +e.target!.pageExecute.value,
-    );
+    //@ts-ignore
+    const value = +e.target!.pageExecute.value;
+    if (before && value < before.pageExecute!) {
+      alert("전날보다 더 앞 페이지를 입력할 수 없습니다.");
+      return;
+    }
+    const newSchedule = updateSchedule(plan, list, idx, value);
     updateLoading(true);
     updateList(newSchedule);
   };
@@ -78,23 +83,34 @@ function ScheduleItem({
   recalc,
 }: {
   plan: PlanType;
-  before: Schedule;
+  before: Schedule | undefined;
   data: Schedule;
   idx: number;
-  recalc: (idx: number, e: FormEvent<HTMLFormElement>) => void;
+  recalc: (
+    before: Schedule | undefined,
+    idx: number,
+    e: FormEvent<HTMLFormElement>
+  ) => void;
 }) {
   const { date, pagePlanOrigin, pagePlanModified, pageExecute } = data;
+
+  const modifyPart =
+    before &&
+    (before.pageExecute === plan.totalPage ||
+      (before.pagePlanModified === plan.totalPage &&
+        before.pageExecute === undefined))
+      ? ""
+      : `수정된 계획 ${pagePlanModified}`;
+
   const executePart =
-    pageExecute > 0 ? (
+    pageExecute !== undefined && pageExecute > 0 ? (
       `실행 ${pageExecute}`
     ) : before?.pageExecute === plan.totalPage ? (
-      ""
-    ) : before?.pagePlanModified === plan.totalPage ? (
       ""
     ) : (
       <>
         실행{" "}
-        <form onSubmit={recalc.bind(null, idx)}>
+        <form onSubmit={recalc.bind(null, before, idx)}>
           <input type="number" name="pageExecute" className="w-2/3" />
           <button className="btn btn-xs btn-primary">다시 계산</button>
         </form>
@@ -105,7 +121,7 @@ function ScheduleItem({
     <div className="grid grid-cols-4 gap-1">
       <span>날짜 {date}</span>
       <span>계획 {pagePlanOrigin}</span>
-      <span>수정된 계획 {pagePlanModified}</span>
+      <span>{modifyPart}</span>
       <span>{executePart}</span>
     </div>
   );

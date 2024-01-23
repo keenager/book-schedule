@@ -7,7 +7,7 @@ export class Schedule {
     date: string,
     pagePlanOrigin: number,
     pageplanModified: number | undefined,
-    pageExecute?: number,
+    pageExecute: number | undefined
   ) {
     this._date = date;
     this._pagePlanOrigin = pagePlanOrigin;
@@ -24,7 +24,7 @@ export class Schedule {
   get pagePlanModified() {
     return this._pagePlanModified;
   }
-  get pageExecute() {
+  get pageExecute(): number | undefined {
     return this._pageExecute;
   }
 
