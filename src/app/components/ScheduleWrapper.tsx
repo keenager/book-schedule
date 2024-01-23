@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DataType, PlanType } from "../types/scheduleTypes";
 import ScheduleForm from "./ScheduleForm";
 import ScheduleDetail from "./ScheduleDetail";
@@ -24,24 +24,24 @@ export default function ScheduleWrapper() {
     scheduleList = createSchedule(plan);
   }
 
-  const loadBooksHandler = () => {
-    const loadedData: DataType = JSON.parse(
-      localStorage.getItem("bookSchedule") ?? "{}",
-    );
-    setSavedBooks(Object.keys(loadedData));
-  };
+  useEffect(() => {
+    const savedData = localStorage.getItem("bookSchedule");
+    if (savedData) {
+      const loadedData: DataType = JSON.parse(savedData);
+      setSavedBooks(Object.keys(loadedData));
+    }
+  }, []);
 
   return (
     <>
-      <button className="btn btn-xs btn-primary" onClick={loadBooksHandler}>
-        불러오기
-      </button>
-      <BookList
-        list={savedBooks}
-        updatePlan={setPlan}
-        updateList={setLoadedList}
-        updateLoading={setIsLoading}
-      />
+      {savedBooks.length > 0 && (
+        <BookList
+          list={savedBooks}
+          updatePlan={setPlan}
+          updateList={setLoadedList}
+          updateLoading={setIsLoading}
+        />
+      )}
       <ScheduleForm
         plan={plan}
         updatePlan={setPlan}

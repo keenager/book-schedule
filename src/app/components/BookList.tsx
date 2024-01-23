@@ -23,7 +23,7 @@ export default function BookList({
   };
 
   return (
-    <div className="w-48 overflow-x-auto">
+    <section className="book-list my-6 w-48 overflow-x-auto">
       <table className="table">
         <thead>
           <tr>
@@ -44,6 +44,6 @@ export default function BookList({
           ))}
         </tbody>
       </table>
-    </div>
+    </section>
   );
 }

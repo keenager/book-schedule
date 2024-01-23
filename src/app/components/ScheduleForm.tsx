@@ -34,41 +34,52 @@ export default function ScheduleForm({
   };
 
   return (
-    <form id="myForm" onSubmit={createHandler}>
-      <div>
-        <label>
-          책 이름:
+    <section className="schedule-form">
+      <form
+        id="myForm"
+        className="lg:flex lg:flex-col lg:items-center "
+        onSubmit={createHandler}
+      >
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text">책 이름</span>
+          </div>
           <input
             type="text"
+            className="input input-bordered input-sm lg:input-md w-full max-w-xs"
             name="title"
             value={plan.title}
             onChange={changeHandler.bind(null, "title")}
           />
         </label>
-      </div>
-      <div>
-        <label>
-          총 페이지:
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text">총 페이지</span>
+          </div>
           <input
             type="number"
+            className="input input-bordered input-sm lg:input-md w-full max-w-xs"
             name="totalPage"
             value={plan.totalPage}
             onChange={changeHandler.bind(null, "totalPage")}
           />
         </label>
-      </div>
-      <div>
-        <label>
-          하루 읽을 페이지:
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text">하루 읽을 페이지</span>
+          </div>
           <input
             type="number"
+            className="input input-bordered input-sm lg:input-md w-full max-w-xs"
             name="dailyPage"
             value={plan.dailyPage}
             onChange={changeHandler.bind(null, "dailyPage")}
           />
         </label>
-      </div>
-      <button className="btn btn-xs btn-primary">만들기</button>
-    </form>
+        <div className="flex justify-end my-3 w-full max-w-xs">
+          <button className="btn btn-sm lg:btn-md btn-primary">만들기</button>
+        </div>
+      </form>
+    </section>
   );
 }
