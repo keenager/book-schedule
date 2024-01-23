@@ -1,30 +1,51 @@
 export class Schedule {
   private _date = "";
-  _pagePlan = 0;
+  _pagePlanOrigin = 0;
+  _pagePlanModified = 0;
   _pageExecute = 0;
-  constructor(date: string, pagePlan: number, pageExecute: number) {
+  constructor(
+    date: string,
+    pagePlanOrigin: number,
+    pageplanModified: number | undefined,
+    pageExecute: number,
+  ) {
     this._date = date;
-    this._pagePlan = pagePlan;
+    this._pagePlanOrigin = pagePlanOrigin;
+    this._pagePlanModified = pageplanModified ?? pagePlanOrigin;
     this._pageExecute = pageExecute;
   }
 
   get date() {
     return this._date;
   }
-  get pagePlan() {
-    return this._pagePlan;
+  get pagePlanOrigin() {
+    return this._pagePlanOrigin;
+  }
+  get pagePlanModified() {
+    return this._pagePlanModified;
   }
   get pageExecute() {
     return this._pageExecute;
   }
+
+  set pageExecute(page: number) {
+    this._pageExecute = page;
+  }
+
   toArray() {
-    return [this._date, this._pagePlan, this._pageExecute];
+    return [
+      this._date,
+      this._pagePlanOrigin,
+      this._pagePlanModified,
+      this._pageExecute,
+    ];
   }
   toObj() {
     return {
-      date: this.date,
-      pagePlan: this.pagePlan,
-      pageExecute: this.pageExecute,
+      date: this._date,
+      pagePlanOrigin: this._pagePlanOrigin,
+      pagePlanModified: this._pagePlanModified,
+      pageExecute: this._pageExecute,
     };
   }
 }

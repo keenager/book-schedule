@@ -32,7 +32,11 @@ export default function BookList({
         </thead>
         <tbody>
           {list.map((el, i) => (
-            <tr key={i} onClick={loadScheduleHandler.bind(null, el)}>
+            <tr
+              key={i}
+              className="cursor-pointer"
+              onClick={loadScheduleHandler.bind(null, el)}
+            >
               <th>{i + 1}</th>
               <td>{el}</td>
             </tr>

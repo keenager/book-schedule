@@ -26,7 +26,7 @@ export default function ScheduleWrapper() {
 
   const loadBooksHandler = () => {
     const loadedData: DataType = JSON.parse(
-      localStorage.getItem("bookSchedule") ?? "{}"
+      localStorage.getItem("bookSchedule") ?? "{}",
     );
     setSavedBooks(Object.keys(loadedData));
   };
@@ -47,7 +47,11 @@ export default function ScheduleWrapper() {
         updatePlan={setPlan}
         updateLoading={setIsLoading}
       />
-      <ScheduleDetail plan={plan} list={scheduleList} />
+      <ScheduleDetail
+        plan={plan}
+        list={scheduleList}
+        updateList={setLoadedList}
+      />
     </>
   );
 }
