@@ -8,7 +8,7 @@ export const createSchedule = ({ totalPage, dailyPage }: PlanType) => {
 
   while (page < totalPage + dailyPage) {
     if (page > totalPage) page = totalPage;
-    result.push(new Schedule(date.toLocaleDateString(), page, 0));
+    result.push(new Schedule(date.toLocaleDateString(), page));
     date.setDate(date.getDate() + 1);
     page += dailyPage;
   }
@@ -22,42 +22,47 @@ export const updateSchedule = (
   idx: number,
   readPage: number,
 ) => {
-  prevSchedule[idx].pageExecute = readPage;
-  let plannedPage = prevSchedule[idx].pagePlanOrigin;
+  prevSchedule[idx].pageExecute =
+    readPage > plan.totalPage ? plan.totalPage : readPage;
+  let { date, pagePlanOrigin, pagePlanModified } = prevSchedule[idx].toObj();
+  const { totalPage, dailyPage } = plan;
 
-  if (plannedPage == readPage) {
+  if (pagePlanOrigin == readPage) {
     return prevSchedule;
   }
 
   //현재 rowIndex 이후의 리스트를 새로 생성
   const newSubList: Schedule[] = [];
-  const date = new Date(prevSchedule[idx].date);
-  const { totalPage, dailyPage } = plan;
-  let modifiedPage = prevSchedule[idx].pagePlanModified;
+  const newDate = new Date(date);
+  let isRightAfter = true;
 
   do {
-    date.setDate(date.getDate() + 1);
-    if (plannedPage < totalPage) {
-      plannedPage += dailyPage;
+    newDate.setDate(newDate.getDate() + 1);
+    if (pagePlanOrigin < totalPage) {
+      pagePlanOrigin += dailyPage;
     }
-    if (totalPage < plannedPage && plannedPage < totalPage + dailyPage) {
-      plannedPage = totalPage;
+    if (totalPage < pagePlanOrigin && pagePlanOrigin < totalPage + dailyPage) {
+      pagePlanOrigin = totalPage;
     }
-    //TODO: readPage가 연속해서 같을 때, totalPage와 같을 때 무한반복되는 문제.
-    if (modifiedPage < totalPage) {
-      if (modifiedPage === prevSchedule[idx].pagePlanModified) {
-        modifiedPage = readPage + dailyPage;
+    if (pagePlanModified < totalPage) {
+      if (isRightAfter) {
+        pagePlanModified = readPage + dailyPage;
+        isRightAfter = false;
       } else {
-        modifiedPage += dailyPage;
+        pagePlanModified += dailyPage;
       }
     }
-    if (totalPage < modifiedPage && modifiedPage < totalPage + dailyPage) {
-      modifiedPage = totalPage;
+    if (totalPage < pagePlanModified) {
+      pagePlanModified = totalPage;
     }
     newSubList.push(
-      new Schedule(date.toLocaleDateString(), plannedPage, modifiedPage),
+      new Schedule(
+        newDate.toLocaleDateString(),
+        pagePlanOrigin,
+        pagePlanModified,
+      ),
     );
-  } while (plannedPage != totalPage || modifiedPage != totalPage);
+  } while (pagePlanOrigin != totalPage || pagePlanModified != totalPage);
 
   // 현재 rowIndex 이후 부분을 새로 만든 인덱스로 대체
   const newSchedule = [...prevSchedule.slice(0, idx + 1), ...newSubList];

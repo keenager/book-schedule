@@ -2,12 +2,12 @@ export class Schedule {
   private _date = "";
   _pagePlanOrigin = 0;
   _pagePlanModified = 0;
-  _pageExecute = 0;
+  _pageExecute;
   constructor(
     date: string,
     pagePlanOrigin: number,
     pageplanModified: number | undefined,
-    pageExecute: number,
+    pageExecute: number | undefined,
   ) {
     this._date = date;
     this._pagePlanOrigin = pagePlanOrigin;
