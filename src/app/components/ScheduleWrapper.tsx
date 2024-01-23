@@ -51,6 +51,7 @@ export default function ScheduleWrapper() {
         plan={plan}
         list={scheduleList}
         updateList={setLoadedList}
+        updateLoading={setIsLoading}
       />
     </>
   );

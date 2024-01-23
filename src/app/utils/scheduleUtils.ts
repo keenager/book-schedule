@@ -64,7 +64,7 @@ export const updateSchedule = (
     );
   } while (pagePlanOrigin != totalPage || pagePlanModified != totalPage);
 
-  // 현재 rowIndex 이후 부분을 새로 만든 인덱스로 대체
+  // rowIndex 이후 부분을 새로 만든 배열로 대체
   const newSchedule = [...prevSchedule.slice(0, idx + 1), ...newSubList];
   return newSchedule;
 };

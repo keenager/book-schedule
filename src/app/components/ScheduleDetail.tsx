@@ -7,10 +7,12 @@ export default function ScheduleDetail({
   plan,
   list,
   updateList,
+  updateLoading,
 }: {
   plan: PlanType;
   list: Schedule[];
   updateList: Dispatch<SetStateAction<Schedule[]>>;
+  updateLoading: Dispatch<SetStateAction<boolean>>;
 }) {
   const { title, totalPage, dailyPage } = plan;
   const isValidPlan = title && totalPage && dailyPage;
@@ -32,16 +34,13 @@ export default function ScheduleDetail({
 
   const recalc = (idx: number, e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("plan", plan);
-    console.log("prev", list);
-    console.log("idx", idx);
-    console.log("readPage", e.target!.pageExecute.value);
     const newSchedule = updateSchedule(
       plan,
       list,
       idx,
       +e.target!.pageExecute.value,
     );
+    updateLoading(true);
     updateList(newSchedule);
   };
 
@@ -52,7 +51,14 @@ export default function ScheduleDetail({
       )}
       <div>
         {list.map((d, i) => (
-          <ScheduleItem key={i} recalc={recalc} data={d} idx={i} />
+          <ScheduleItem
+            key={i}
+            recalc={recalc}
+            plan={plan}
+            before={list[i - 1]}
+            data={d}
+            idx={i}
+          />
         ))}
       </div>
       {isValidPlan && (
@@ -65,29 +71,42 @@ export default function ScheduleDetail({
 }
 
 function ScheduleItem({
+  plan,
+  before,
   data,
   idx,
   recalc,
 }: {
+  plan: PlanType;
+  before: Schedule;
   data: Schedule;
   idx: number;
   recalc: (idx: number, e: FormEvent<HTMLFormElement>) => void;
 }) {
-  const exeDiv =
-    data.pageExecute > 0 ? (
-      data.pageExecute
+  const { date, pagePlanOrigin, pagePlanModified, pageExecute } = data;
+  const executePart =
+    pageExecute > 0 ? (
+      `실행 ${pageExecute}`
+    ) : before?.pageExecute === plan.totalPage ? (
+      ""
+    ) : before?.pagePlanModified === plan.totalPage ? (
+      ""
     ) : (
-      <form onSubmit={recalc.bind(null, idx)}>
-        <input type="number" name="pageExecute" className="w-2/3" />
-        <button className="btn btn-xs btn-primary">다시 계산</button>
-      </form>
+      <>
+        실행{" "}
+        <form onSubmit={recalc.bind(null, idx)}>
+          <input type="number" name="pageExecute" className="w-2/3" />
+          <button className="btn btn-xs btn-primary">다시 계산</button>
+        </form>
+      </>
     );
+
   return (
     <div className="grid grid-cols-4 gap-1">
-      <span>날짜 {data.date}</span>
-      <span>계획 {data.pagePlanOrigin}</span>
-      <span>수정된 계획 {data.pagePlanModified}</span>
-      <span>실행 {exeDiv}</span>
+      <span>날짜 {date}</span>
+      <span>계획 {pagePlanOrigin}</span>
+      <span>수정된 계획 {pagePlanModified}</span>
+      <span>{executePart}</span>
     </div>
   );
 }

@@ -12,7 +12,7 @@ export default function ScheduleForm({
   updatePlan: Dispatch<SetStateAction<PlanType>>;
   updateLoading: Dispatch<SetStateAction<boolean>>;
 }) {
-  const createHandler = (e: React.MouseEvent<HTMLFormElement>) => {
+  const createHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const myForm = document.getElementById("myForm")! as HTMLFormElement;
     const formData = new FormData(myForm);
