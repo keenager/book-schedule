@@ -21,6 +21,7 @@ export default function BookList({
     updateList(fromObjListToClassList(schedules));
     updateLoading(true);
   };
+
   return (
     <div className="w-48 overflow-x-auto">
       <table className="table">
