@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { DataType, PlanType } from "../types/scheduleTypes";
 import ScheduleForm from "./ScheduleForm";
+import ScheduleGoal from "./ScheduleGoal";
+import TodayDone from "./TodayDone";
 import ScheduleDetail from "./ScheduleDetail";
 import { createSchedule } from "../utils/scheduleUtils";
 import BookList from "./BookList";
@@ -13,6 +15,9 @@ export default function ScheduleWrapper() {
     totalPage: 0,
     dailyPage: 0,
   });
+  const { title, totalPage, dailyPage } = plan;
+  const isValidPlan = title.length > 0 && totalPage > 0 && dailyPage > 0;
+
   const [savedBooks, setSavedBooks] = useState<string[]>([]);
   const [loadedList, setLoadedList] = useState<Schedule[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -24,12 +29,32 @@ export default function ScheduleWrapper() {
     scheduleList = createSchedule(plan);
   }
 
-  useEffect(() => {
+  const saveHandler = () => {
+    const prev = JSON.parse(localStorage.getItem("bookSchedule") ?? "{}");
+    const dataToSave: DataType = {
+      ...prev,
+      [title]: {
+        totalPage,
+        dailyPage,
+        schedules: scheduleList.map((el) => el.toObj()),
+      },
+    };
+
+    localStorage.setItem("bookSchedule", JSON.stringify(dataToSave));
+    alert(`${title} 스케줄을 저장하였습니다.`);
+    loadBooks();
+  };
+
+  const loadBooks = () => {
     const savedData = localStorage.getItem("bookSchedule");
     if (savedData) {
       const loadedData: DataType = JSON.parse(savedData);
       setSavedBooks(Object.keys(loadedData));
     }
+  };
+
+  useEffect(() => {
+    loadBooks();
   }, []);
 
   return (
@@ -47,12 +72,30 @@ export default function ScheduleWrapper() {
         updatePlan={setPlan}
         updateLoading={setIsLoading}
       />
-      <ScheduleDetail
-        plan={plan}
-        list={scheduleList}
-        updateList={setLoadedList}
-        updateLoading={setIsLoading}
-      />
+      {isValidPlan && (
+        <>
+          <div className="my-3 grid grid-cols-3 items-end">
+            <div></div>
+            <ScheduleGoal totalPage={totalPage} dailyPage={dailyPage} />
+            <TodayDone />
+          </div>
+          <ScheduleDetail
+            plan={plan}
+            list={scheduleList}
+            updateList={setLoadedList}
+            updateLoading={setIsLoading}
+          />
+
+          <div className="flex justify-end">
+            <button
+              className="btn btn-sm lg:btn-md btn-primary"
+              onClick={saveHandler}
+            >
+              저장
+            </button>
+          </div>
+        </>
+      )}
     </>
   );
 }

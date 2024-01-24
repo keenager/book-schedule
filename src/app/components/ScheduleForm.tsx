@@ -12,16 +12,17 @@ export default function ScheduleForm({
   updatePlan: Dispatch<SetStateAction<PlanType>>;
   updateLoading: Dispatch<SetStateAction<boolean>>;
 }) {
-  const createHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const createHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const myForm = document.getElementById("myForm")! as HTMLFormElement;
     const formData = new FormData(myForm);
     const temp = Object.fromEntries(formData);
-    const plan = {
+    const plan: PlanType = {
       ...temp,
       totalPage: Number(temp.totalPage),
       dailyPage: Number(temp.dailyPage),
-    } as PlanType;
+      startDate: new Date().toLocaleDateString(),
+    };
     updateLoading(false);
     updatePlan(plan);
   };
@@ -60,7 +61,7 @@ export default function ScheduleForm({
             type="number"
             className="input input-bordered input-sm lg:input-md w-full max-w-xs"
             name="totalPage"
-            value={plan.totalPage}
+            value={plan.totalPage || undefined}
             onChange={changeHandler.bind(null, "totalPage")}
           />
         </label>
@@ -72,7 +73,7 @@ export default function ScheduleForm({
             type="number"
             className="input input-bordered input-sm lg:input-md w-full max-w-xs"
             name="dailyPage"
-            value={plan.dailyPage}
+            value={plan.dailyPage || undefined}
             onChange={changeHandler.bind(null, "dailyPage")}
           />
         </label>

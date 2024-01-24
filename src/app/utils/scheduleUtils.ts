@@ -9,7 +9,7 @@ export const createSchedule = ({ totalPage, dailyPage }: PlanType) => {
   while (page < totalPage + dailyPage) {
     if (page > totalPage) page = totalPage;
     result.push(
-      new Schedule(date.toLocaleDateString(), page, undefined, undefined)
+      new Schedule(date.toLocaleDateString(), page, undefined, undefined),
     );
     date.setDate(date.getDate() + 1);
     page += dailyPage;
@@ -21,25 +21,31 @@ export const createSchedule = ({ totalPage, dailyPage }: PlanType) => {
 export const updateSchedule = (
   plan: PlanType,
   prevSchedule: Schedule[],
-  idx: number,
-  readPage: number
+  // idx: number,
+  today: string,
+  pageDone: number,
 ) => {
-  prevSchedule[idx].pageExecute =
-    readPage > plan.totalPage ? plan.totalPage : readPage;
-  let { date, pagePlanOrigin, pagePlanModified } = prevSchedule[idx].toObj();
-  const { totalPage, dailyPage } = plan;
+  const idx = prevSchedule.findIndex((schedule) => schedule.date === today);
+  let { pagePlanOrigin, pagePlanModified } = prevSchedule[idx].toObj();
 
-  if (pagePlanOrigin == readPage) {
+  prevSchedule[idx].pageDone =
+    pageDone > plan.totalPage ? plan.totalPage : pageDone;
+
+  if (pagePlanModified === pageDone) {
     return prevSchedule;
   }
 
+  const { totalPage, dailyPage } = plan;
+
   //현재 rowIndex 이후의 리스트를 새로 생성
   const newSubList: Schedule[] = [];
-  const newDate = new Date(date);
+  // const newDate = new Date(date);
+  const date = new date(today);
   let isRightAfter = true;
 
   do {
-    newDate.setDate(newDate.getDate() + 1);
+    date.setDate(date.getDate() + 1);
+
     if (pagePlanOrigin < totalPage) {
       pagePlanOrigin += dailyPage;
     }
@@ -48,7 +54,7 @@ export const updateSchedule = (
     }
     if (pagePlanModified < totalPage) {
       if (isRightAfter) {
-        pagePlanModified = readPage + dailyPage;
+        pagePlanModified = pageDone + dailyPage;
         isRightAfter = false;
       } else {
         pagePlanModified += dailyPage;
@@ -62,8 +68,8 @@ export const updateSchedule = (
         newDate.toLocaleDateString(),
         pagePlanOrigin,
         pagePlanModified,
-        undefined
-      )
+        undefined,
+      ),
     );
   } while (pagePlanOrigin != totalPage || pagePlanModified != totalPage);
 
@@ -79,7 +85,7 @@ export const fromObjListToClassList = (obj: ScheduleObjType[]) => {
         el.date,
         el.pagePlanOrigin,
         el.pagePlanModified,
-        el.pageExecute
-      )
+        el.pageDone,
+      ),
   );
 };

@@ -4,6 +4,7 @@ export type PlanType = {
   title: string;
   totalPage: number;
   dailyPage: number;
+  startDate: string;
 };
 
 export type DataType = {

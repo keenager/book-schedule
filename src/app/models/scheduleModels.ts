@@ -2,17 +2,17 @@ export class Schedule {
   _date: string;
   _pagePlanOrigin: number;
   _pagePlanModified: number;
-  _pageExecute: number | undefined;
+  _pageDone: number | undefined;
   constructor(
     date: string,
     pagePlanOrigin: number,
     pageplanModified: number | undefined,
-    pageExecute: number | undefined
+    pageDone: number | undefined,
   ) {
     this._date = date;
     this._pagePlanOrigin = pagePlanOrigin;
     this._pagePlanModified = pageplanModified ?? pagePlanOrigin;
-    this._pageExecute = pageExecute;
+    this._pageDone = pageDone;
   }
 
   get date() {
@@ -24,12 +24,12 @@ export class Schedule {
   get pagePlanModified() {
     return this._pagePlanModified;
   }
-  get pageExecute(): number | undefined {
-    return this._pageExecute;
+  get pageDone(): number | undefined {
+    return this._pageDone;
   }
 
-  set pageExecute(page: number) {
-    this._pageExecute = page;
+  set pageDone(page: number) {
+    this._pageDone = page;
   }
 
   toArray() {
@@ -37,7 +37,7 @@ export class Schedule {
       this._date,
       this._pagePlanOrigin,
       this._pagePlanModified,
-      this._pageExecute,
+      this._pageDone,
     ];
   }
   toObj() {
@@ -45,7 +45,7 @@ export class Schedule {
       date: this._date,
       pagePlanOrigin: this._pagePlanOrigin,
       pagePlanModified: this._pagePlanModified,
-      pageExecute: this._pageExecute,
+      pageDone: this._pageExecute,
     };
   }
 }

@@ -14,28 +14,10 @@ export default function ScheduleDetail({
   updateList: Dispatch<SetStateAction<Schedule[]>>;
   updateLoading: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { title, totalPage, dailyPage } = plan;
-  const isValidPlan = title && totalPage && dailyPage;
-
-  const saveHandler = () => {
-    const prev = JSON.parse(localStorage.getItem("bookSchedule") ?? "{}");
-    const dataToSave: DataType = {
-      ...prev,
-      [title]: {
-        totalPage,
-        dailyPage,
-        schedules: list.map((el) => el.toObj()),
-      },
-    };
-
-    localStorage.setItem("bookSchedule", JSON.stringify(dataToSave));
-    alert(`${title} 스케줄을 저장하였습니다.`);
-  };
-
   const recalc = (
     before: Schedule | undefined,
     idx: number,
-    e: FormEvent<HTMLFormElement>
+    e: FormEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
     //@ts-ignore
@@ -51,7 +33,6 @@ export default function ScheduleDetail({
 
   return (
     <section className="schedule-detail my-3">
-      {isValidPlan && <Goal totalPage={totalPage} dailyPage={dailyPage} />}
       <div className="schedule-table my-3 overflow-x-auto">
         <table className="table table-zebra">
           <thead>
@@ -77,42 +58,7 @@ export default function ScheduleDetail({
           </tbody>
         </table>
       </div>
-      {isValidPlan && (
-        <div className="flex justify-end">
-          <button
-            className="btn btn-sm lg:btn-md btn-primary"
-            onClick={saveHandler}
-          >
-            저장
-          </button>
-        </div>
-      )}
     </section>
-  );
-}
-
-function Goal({
-  totalPage,
-  dailyPage,
-}: {
-  totalPage: number;
-  dailyPage: number;
-}) {
-  return (
-    <div className="your-goal my-3 flex justify-center">
-      <div className="stats shadow">
-        <div className="stat place-items-center">
-          <div className="stat-title">전체</div>
-          <div className="stat-value">{totalPage}</div>
-          <div className="stat-desc">page</div>
-        </div>
-        <div className="stat place-items-center">
-          <div className="stat-title">하루</div>
-          <div className="stat-value text-secondary">{dailyPage}</div>
-          <div className="stat-desc text-secondary">page</div>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -130,7 +76,7 @@ function ScheduleItem({
   recalc: (
     before: Schedule | undefined,
     idx: number,
-    e: FormEvent<HTMLFormElement>
+    e: FormEvent<HTMLFormElement>,
   ) => void;
 }) {
   const { date, pagePlanOrigin, pagePlanModified, pageExecute } = data;
@@ -154,35 +100,29 @@ function ScheduleItem({
     </form>
   );
   //TODO: 이 부분 해결하기.
-  const executePart = !(before || pageExecute)
-    ? recalcForm
-    : !before && pageExecute
-    ? pageExecute
-    : before && !pageExecute
-    ? recalcForm
-    : before && pageExecute
-    ? pageExecute
-    : // : pageExecute !== undefined && pageExecute > 0
-      // ? pageExecute
-      // : before.pageExecute === undefined || before.pageExecute < plan.totalPage
-      // ? recalcForm
-      // : before.pagePlanModified === plan.totalPage
-      // ? ""
-      "";
+  // const executePart = !(before || pageExecute)
+  //   ? recalcForm
+  //   : !before && pageExecute
+  //     ? pageExecute
+  //     : before && !pageExecute
+  //       ? recalcForm
+  //       : before && pageExecute
+  //         ? pageExecute
+  //         : // : pageExecute !== undefined && pageExecute > 0
+  //           // ? pageExecute
+  //           // : before.pageExecute === undefined || before.pageExecute < plan.totalPage
+  //           // ? recalcForm
+  //           // : before.pagePlanModified === plan.totalPage
+  //           // ? ""
+  //           "";
 
   return (
-    // <div className="grid grid-cols-4 gap-1">
-    //   <span>날짜 {date}</span>
-    //   <span>계획 {pagePlanOrigin}</span>
-    //   <span>{modifyPart}</span>
-    //   <span>{executePart}</span>
-    // </div>
     <tr>
       <th>{idx + 1}</th>
       <td>{date}</td>
       <td>{pagePlanOrigin}</td>
-      <td>{modifyPart}</td>
-      <td>{executePart}</td>
+      <td>{pagePlanModified}</td>
+      <td>{pageExecute}</td>
     </tr>
   );
 }
