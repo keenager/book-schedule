@@ -21,7 +21,7 @@ export const updateSchedule = (
   prevSchedule: Schedule[],
   todayStr: string,
   idxOfToday: number,
-  pageDoneToday: number,
+  pageDoneToday: number
 ) => {
   const { totalPage, dailyPage } = plan;
   let { pagePlanOrigin, pagePlanModified } = prevSchedule[idxOfToday].toObj();
@@ -30,7 +30,6 @@ export const updateSchedule = (
 
   //현재 rowIndex 이후의 리스트를 새로 생성
   const newSubList: Schedule[] = [];
-  // const newDate = new Date(date);
   const date = new Date(todayStr);
   let isRightAfterToday = true;
   let scheduleOfYesterday = prevSchedule[idxOfToday - 1];
@@ -40,7 +39,7 @@ export const updateSchedule = (
     // 날짜 증가
     date.setDate(date.getDate() + 1);
     // 원래 계획 처리
-    if (pagePlanOrigin === totalPage) {
+    if (pagePlanOrigin === undefined || pagePlanOrigin === totalPage) {
       pagePlanOrigin = undefined;
     } else {
       if (pagePlanOrigin < totalPage) {
@@ -51,7 +50,7 @@ export const updateSchedule = (
       }
     }
     // 수정된 계획 처리
-    if (pagePlanModified === totalPage || pageDoneToday === totalPage) {
+    if (pagePlanModified === undefined || pagePlanModified === totalPage) {
       pagePlanModified = undefined;
     } else {
       if (pagePlanModified < totalPage) {
@@ -72,14 +71,15 @@ export const updateSchedule = (
         date.toLocaleDateString(),
         pagePlanOrigin,
         pagePlanModified,
-        undefined,
-      ),
+        undefined
+      )
     );
     console.log(pagePlanOrigin, pagePlanModified);
   } while (
     !(pagePlanOrigin === totalPage && pagePlanModified === totalPage) &&
     !(pagePlanOrigin === totalPage && pagePlanModified === undefined) &&
-    !(pagePlanOrigin === undefined && pagePlanModified === totalPage)
+    !(pagePlanOrigin === undefined && pagePlanModified === totalPage) &&
+    !(pagePlanOrigin === undefined && pagePlanModified === undefined)
   );
 
   // rowIndex 이후 부분을 새로 만든 배열로 대체
@@ -90,11 +90,6 @@ export const updateSchedule = (
 export const fromObjListToClassList = (obj: ScheduleObjType[]) => {
   return obj.map(
     (el) =>
-      new Schedule(
-        el.date,
-        el.pagePlanOrigin,
-        el.pagePlanModified,
-        el.pageDone,
-      ),
+      new Schedule(el.date, el.pagePlanOrigin, el.pagePlanModified, el.pageDone)
   );
 };

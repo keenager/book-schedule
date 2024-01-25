@@ -17,7 +17,7 @@ export type DataType = {
 
 export type ScheduleObjType = {
   date: string;
-  pagePlanOrigin: number;
-  pagePlanModified: number;
-  pageExecute: number;
+  pagePlanOrigin: number | undefined;
+  pagePlanModified: number | undefined;
+  pageDone: number | undefined;
 };

@@ -1,13 +1,13 @@
 export class Schedule {
   _date: string;
-  _pagePlanOrigin: number;
-  _pagePlanModified: number;
+  _pagePlanOrigin: number | undefined;
+  _pagePlanModified: number | undefined;
   _pageDone: number | undefined;
   constructor(
     date: string,
     pagePlanOrigin: number | undefined,
     pageplanModified: number | undefined,
-    pageDone: number | undefined,
+    pageDone: number | undefined
   ) {
     this._date = date;
     this._pagePlanOrigin = pagePlanOrigin;
