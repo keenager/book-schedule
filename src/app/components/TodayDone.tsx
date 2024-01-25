@@ -1,3 +1,6 @@
+import { Dispatch, FormEvent, SetStateAction } from "react";
+import { Schedule } from "../models/scheduleModels";
+import { PlanType } from "../types/scheduleTypes";
 import { updateSchedule } from "../utils/scheduleUtils";
 
 export default function TodayDone({
@@ -11,13 +14,8 @@ export default function TodayDone({
   updateList: Dispatch<SetStateAction<Schedule[]>>;
   updateLoading: Dispatch<SetStateAction<boolean>>;
 }) {
-  // const todayStr = new Date().toLocaleDateString();
-  const todayStr = "2024. 1. 26.";
-  const recalc = (
-    // before: Schedule | undefined,
-    // idx: number,
-    e: FormEvent<HTMLFormElement>,
-  ) => {
+  const todayStr = new Date().toLocaleDateString();
+  const recalc = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // page validation
     //@ts-ignore
@@ -29,14 +27,13 @@ export default function TodayDone({
       alert("전날보다 더 앞 페이지를 입력할 수 없습니다.");
       return;
     }
-    // const newSchedule = updateSchedule(plan, list, idx, value);
     const newSchedule = updateSchedule(plan, list, todayStr, idx, pageDone);
     updateLoading(true);
     updateList([...newSchedule]);
   };
 
   return (
-    <form onSubmit={recalc}>
+    <form onSubmit={recalc} className="flex flex-wrap justify-end items-end">
       <label>
         <div className="label">
           <span className="label-text">오늘</span>
@@ -47,7 +44,7 @@ export default function TodayDone({
           className="input input-bordered input-sm lg:input-md w-full max-w-20"
         />
       </label>
-      <button className="btn btn-xs btn-primary ml-2">적용</button>
+      <button className="btn btn-sm lg:btn-md btn-primary ml-2">적용</button>
     </form>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { ChangeEvent, Dispatch, FormEvent, SetStateAction } from "react";
 import { PlanType } from "../types/scheduleTypes";
 
 export default function ScheduleForm({
@@ -18,7 +18,7 @@ export default function ScheduleForm({
     const formData = new FormData(myForm);
     const temp = Object.fromEntries(formData);
     const plan: PlanType = {
-      ...temp,
+      title: temp.title.toString(),
       totalPage: Number(temp.totalPage),
       dailyPage: Number(temp.dailyPage),
       startDate: new Date().toLocaleDateString(),
@@ -38,7 +38,7 @@ export default function ScheduleForm({
     <section className="schedule-form">
       <form
         id="myForm"
-        className="lg:flex lg:flex-col lg:items-center "
+        className="flex flex-col items-center "
         onSubmit={createHandler}
       >
         <label className="form-control w-full max-w-xs">

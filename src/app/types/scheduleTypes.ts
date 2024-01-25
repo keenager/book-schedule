@@ -8,7 +8,7 @@ export type PlanType = {
 };
 
 export type DataType = {
-  [key: string]: {
+  [title: string]: {
     totalPage: string;
     dailyPage: string;
     schedules: Schedule[];
