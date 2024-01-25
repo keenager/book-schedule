@@ -5,13 +5,13 @@ export class Schedule {
   _pageDone: number | undefined;
   constructor(
     date: string,
-    pagePlanOrigin: number,
+    pagePlanOrigin: number | undefined,
     pageplanModified: number | undefined,
     pageDone: number | undefined,
   ) {
     this._date = date;
     this._pagePlanOrigin = pagePlanOrigin;
-    this._pagePlanModified = pageplanModified ?? pagePlanOrigin;
+    this._pagePlanModified = pageplanModified;
     this._pageDone = pageDone;
   }
 
@@ -27,7 +27,6 @@ export class Schedule {
   get pageDone(): number | undefined {
     return this._pageDone;
   }
-
   set pageDone(page: number) {
     this._pageDone = page;
   }
@@ -45,7 +44,7 @@ export class Schedule {
       date: this._date,
       pagePlanOrigin: this._pagePlanOrigin,
       pagePlanModified: this._pagePlanModified,
-      pageDone: this._pageExecute,
+      pageDone: this._pageDone,
     };
   }
 }

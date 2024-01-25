@@ -8,9 +8,7 @@ export const createSchedule = ({ totalPage, dailyPage }: PlanType) => {
 
   while (page < totalPage + dailyPage) {
     if (page > totalPage) page = totalPage;
-    result.push(
-      new Schedule(date.toLocaleDateString(), page, undefined, undefined),
-    );
+    result.push(new Schedule(date.toLocaleDateString(), page, page, undefined));
     date.setDate(date.getDate() + 1);
     page += dailyPage;
   }
@@ -21,60 +19,71 @@ export const createSchedule = ({ totalPage, dailyPage }: PlanType) => {
 export const updateSchedule = (
   plan: PlanType,
   prevSchedule: Schedule[],
-  // idx: number,
-  today: string,
-  pageDone: number,
+  todayStr: string,
+  idxOfToday: number,
+  pageDoneToday: number,
 ) => {
-  const idx = prevSchedule.findIndex((schedule) => schedule.date === today);
-  let { pagePlanOrigin, pagePlanModified } = prevSchedule[idx].toObj();
-
-  prevSchedule[idx].pageDone =
-    pageDone > plan.totalPage ? plan.totalPage : pageDone;
-
-  if (pagePlanModified === pageDone) {
-    return prevSchedule;
-  }
-
   const { totalPage, dailyPage } = plan;
+  let { pagePlanOrigin, pagePlanModified } = prevSchedule[idxOfToday].toObj();
+
+  prevSchedule[idxOfToday].pageDone = pageDoneToday;
 
   //현재 rowIndex 이후의 리스트를 새로 생성
   const newSubList: Schedule[] = [];
   // const newDate = new Date(date);
-  const date = new date(today);
-  let isRightAfter = true;
+  const date = new Date(todayStr);
+  let isRightAfterToday = true;
+  let scheduleOfYesterday = prevSchedule[idxOfToday - 1];
+  let idxOfCurrent = idxOfToday;
 
   do {
+    // 날짜 증가
     date.setDate(date.getDate() + 1);
-
-    if (pagePlanOrigin < totalPage) {
-      pagePlanOrigin += dailyPage;
-    }
-    if (totalPage < pagePlanOrigin && pagePlanOrigin < totalPage + dailyPage) {
-      pagePlanOrigin = totalPage;
-    }
-    if (pagePlanModified < totalPage) {
-      if (isRightAfter) {
-        pagePlanModified = pageDone + dailyPage;
-        isRightAfter = false;
-      } else {
-        pagePlanModified += dailyPage;
+    // 원래 계획 처리
+    if (pagePlanOrigin === totalPage) {
+      pagePlanOrigin = undefined;
+    } else {
+      if (pagePlanOrigin < totalPage) {
+        pagePlanOrigin += dailyPage;
+      }
+      if (pagePlanOrigin > totalPage) {
+        pagePlanOrigin = totalPage;
       }
     }
-    if (totalPage < pagePlanModified) {
-      pagePlanModified = totalPage;
+    // 수정된 계획 처리
+    if (pagePlanModified === totalPage || pageDoneToday === totalPage) {
+      pagePlanModified = undefined;
+    } else {
+      if (pagePlanModified < totalPage) {
+        if (isRightAfterToday) {
+          pagePlanModified = pageDoneToday + dailyPage;
+          isRightAfterToday = false;
+        } else {
+          pagePlanModified += dailyPage;
+        }
+      }
+      if (pagePlanModified > totalPage) {
+        pagePlanModified = totalPage;
+      }
     }
+    // 새 배열에 추가
     newSubList.push(
       new Schedule(
-        newDate.toLocaleDateString(),
+        date.toLocaleDateString(),
         pagePlanOrigin,
         pagePlanModified,
         undefined,
       ),
     );
-  } while (pagePlanOrigin != totalPage || pagePlanModified != totalPage);
+    console.log(pagePlanOrigin, pagePlanModified);
+  } while (
+    !(pagePlanOrigin === totalPage && pagePlanModified === totalPage) &&
+    !(pagePlanOrigin === totalPage && pagePlanModified === undefined) &&
+    !(pagePlanOrigin === undefined && pagePlanModified === totalPage)
+  );
 
   // rowIndex 이후 부분을 새로 만든 배열로 대체
-  const newSchedule = [...prevSchedule.slice(0, idx + 1), ...newSubList];
+  const newSchedule = [...prevSchedule.slice(0, idxOfToday + 1), ...newSubList];
   return newSchedule;
 };
 

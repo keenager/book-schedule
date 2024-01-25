@@ -77,7 +77,12 @@ export default function ScheduleWrapper() {
           <div className="my-3 grid grid-cols-3 items-end">
             <div></div>
             <ScheduleGoal totalPage={totalPage} dailyPage={dailyPage} />
-            <TodayDone />
+            <TodayDone
+              plan={plan}
+              list={scheduleList}
+              updateList={setLoadedList}
+              updateLoading={setIsLoading}
+            />
           </div>
           <ScheduleDetail
             plan={plan}

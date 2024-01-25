@@ -48,9 +48,9 @@ export default function ScheduleDetail({
             {list.map((d, i) => (
               <ScheduleItem
                 key={i}
-                recalc={recalc}
-                plan={plan}
-                before={list[i - 1]}
+                // recalc={recalc}
+                // plan={plan}
+                // before={list[i - 1]}
                 data={d}
                 idx={i}
               />
@@ -63,42 +63,32 @@ export default function ScheduleDetail({
 }
 
 function ScheduleItem({
-  plan,
-  before,
+  // plan,
+  // before,
   data,
   idx,
-  recalc,
+  // recalc,
 }: {
-  plan: PlanType;
-  before: Schedule | undefined;
+  // plan: PlanType;
+  // before: Schedule | undefined;
   data: Schedule;
   idx: number;
-  recalc: (
-    before: Schedule | undefined,
-    idx: number,
-    e: FormEvent<HTMLFormElement>,
-  ) => void;
+  // recalc: (
+  //   before: Schedule | undefined,
+  //   idx: number,
+  //   e: FormEvent<HTMLFormElement>,
+  // ) => void;
 }) {
-  const { date, pagePlanOrigin, pagePlanModified, pageExecute } = data;
+  const { date, pagePlanOrigin, pagePlanModified, pageDone } = data;
 
-  const modifyPart =
-    before &&
-    (before.pageExecute === plan.totalPage ||
-      (before.pagePlanModified === plan.totalPage &&
-        before.pageExecute === undefined))
-      ? ""
-      : pagePlanModified;
+  // const modifyPart =
+  //   before &&
+  //   (before.pageDone === plan.totalPage ||
+  //     (before.pagePlanModified === plan.totalPage &&
+  //       before.pageDone === undefined))
+  //     ? ""
+  //     : pagePlanModified;
 
-  const recalcForm = (
-    <form onSubmit={recalc.bind(null, before, idx)}>
-      <input
-        type="number"
-        name="pageExecute"
-        className="input input-bordered input-sm lg:input-md w-full max-w-20"
-      />
-      <button className="btn btn-xs btn-primary">다시 계산</button>
-    </form>
-  );
   //TODO: 이 부분 해결하기.
   // const executePart = !(before || pageExecute)
   //   ? recalcForm
@@ -122,7 +112,7 @@ function ScheduleItem({
       <td>{date}</td>
       <td>{pagePlanOrigin}</td>
       <td>{pagePlanModified}</td>
-      <td>{pageExecute}</td>
+      <td>{pageDone}</td>
     </tr>
   );
 }
