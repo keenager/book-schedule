@@ -74,7 +74,6 @@ export const updateSchedule = (
         undefined
       )
     );
-    console.log(pagePlanOrigin, pagePlanModified);
   } while (
     !(pagePlanOrigin === totalPage && pagePlanModified === totalPage) &&
     !(pagePlanOrigin === totalPage && pagePlanModified === undefined) &&

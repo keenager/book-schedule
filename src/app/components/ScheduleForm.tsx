@@ -1,18 +1,19 @@
 "use client";
 
-import { ChangeEvent, Dispatch, FormEvent, SetStateAction } from "react";
-import { PlanType } from "../types/scheduleTypes";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { ActionType, PlanType } from "../types/scheduleTypes";
+import FormInput from "./FormInput";
 
 export default function ScheduleForm({
   plan,
   updatePlan,
-  updateLoading,
+  updateList,
 }: {
   plan: PlanType;
   updatePlan: Dispatch<SetStateAction<PlanType>>;
-  updateLoading: Dispatch<SetStateAction<boolean>>;
+  updateList: Dispatch<ActionType>;
 }) {
-  const createHandler = (e: FormEvent<HTMLFormElement>) => {
+  const createHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const myForm = document.getElementById("myForm")! as HTMLFormElement;
     const formData = new FormData(myForm);
@@ -23,14 +24,13 @@ export default function ScheduleForm({
       dailyPage: Number(temp.dailyPage),
       startDate: new Date().toLocaleDateString(),
     };
-    updateLoading(false);
     updatePlan(plan);
+    updateList({ type: "create", plan });
   };
 
   const changeHandler = (name: string, e: ChangeEvent<HTMLInputElement>) => {
     let value: string | number = e.currentTarget.value;
     if (name !== "title") value = +value;
-    updateLoading(true);
     updatePlan({ ...plan, [name]: value });
   };
 
@@ -41,42 +41,27 @@ export default function ScheduleForm({
         className="flex flex-col items-center "
         onSubmit={createHandler}
       >
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">책 이름</span>
-          </div>
-          <input
-            type="text"
-            className="input input-bordered input-sm lg:input-md w-full max-w-xs"
-            name="title"
-            value={plan.title}
-            onChange={changeHandler.bind(null, "title")}
-          />
-        </label>
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">총 페이지</span>
-          </div>
-          <input
-            type="number"
-            className="input input-bordered input-sm lg:input-md w-full max-w-xs"
-            name="totalPage"
-            value={plan.totalPage || undefined}
-            onChange={changeHandler.bind(null, "totalPage")}
-          />
-        </label>
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">하루 읽을 페이지</span>
-          </div>
-          <input
-            type="number"
-            className="input input-bordered input-sm lg:input-md w-full max-w-xs"
-            name="dailyPage"
-            value={plan.dailyPage || undefined}
-            onChange={changeHandler.bind(null, "dailyPage")}
-          />
-        </label>
+        <FormInput
+          label="책 이름"
+          type="text"
+          name="title"
+          value={plan.title}
+          onChange={changeHandler.bind(null, "title")}
+        />
+        <FormInput
+          label="총 페이지"
+          type="number"
+          name="totalPage"
+          value={plan.totalPage || undefined}
+          onChange={changeHandler.bind(null, "totalPage")}
+        />
+        <FormInput
+          label="하루 읽을 페이지"
+          type="number"
+          name="dailyPage"
+          value={plan.dailyPage || undefined}
+          onChange={changeHandler.bind(null, "dailyPage")}
+        />
         <div className="flex justify-end my-3 w-full max-w-xs">
           <button className="btn btn-sm lg:btn-md btn-primary">만들기</button>
         </div>

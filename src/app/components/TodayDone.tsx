@@ -1,18 +1,16 @@
-import { Dispatch, FormEvent, SetStateAction } from "react";
+import { Dispatch, FormEvent } from "react";
 import { Schedule } from "../models/scheduleModels";
-import { PlanType } from "../types/scheduleTypes";
+import { ActionType, PlanType } from "../types/scheduleTypes";
 import { updateSchedule } from "../utils/scheduleUtils";
 
 export default function TodayDone({
   plan,
   list,
   updateList,
-  updateLoading,
 }: {
   plan: PlanType;
   list: Schedule[];
-  updateList: Dispatch<SetStateAction<Schedule[]>>;
-  updateLoading: Dispatch<SetStateAction<boolean>>;
+  updateList: Dispatch<ActionType>;
 }) {
   const todayStr = new Date().toLocaleDateString();
   const recalc = (e: FormEvent<HTMLFormElement>) => {
@@ -28,8 +26,7 @@ export default function TodayDone({
       return;
     }
     const newSchedule = updateSchedule(plan, list, todayStr, idx, pageDone);
-    updateLoading(true);
-    updateList([...newSchedule]);
+    updateList({ type: "load", schedules: newSchedule });
   };
 
   return (

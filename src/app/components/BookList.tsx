@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { PlanType } from "../types/scheduleTypes";
-import { Schedule } from "../models/scheduleModels";
+import { ActionType, PlanType } from "../types/scheduleTypes";
 import { fromObjListToClassList } from "../utils/scheduleUtils";
 import { blankPlan } from "./ScheduleWrapper";
 
@@ -8,13 +7,11 @@ export default function BookList({
   list,
   updatePlan,
   updateList,
-  updateLoading,
   loadBooks,
 }: {
   list: string[];
   updatePlan: Dispatch<SetStateAction<PlanType>>;
-  updateList: Dispatch<SetStateAction<Schedule[]>>;
-  updateLoading: Dispatch<SetStateAction<boolean>>;
+  updateList: Dispatch<ActionType>;
   loadBooks: () => void;
 }) {
   const loadScheduleHandler = (title: string) => {
@@ -26,8 +23,7 @@ export default function BookList({
       dailyPage: +dailyPage,
       startDate: schedules[0].date,
     });
-    updateList(fromObjListToClassList(schedules));
-    updateLoading(true);
+    updateList({ type: "load", schedules: fromObjListToClassList(schedules) });
   };
 
   const deleteHandler = (title: string) => {
@@ -40,12 +36,12 @@ export default function BookList({
     const $inputs = document.querySelectorAll("input");
     $inputs.forEach((input) => (input.value = ""));
     updatePlan(blankPlan);
-    updateList([]);
+    updateList({ type: "load", schedules: [] });
     loadBooks();
   };
 
   return (
-    <section className="book-list my-6  overflow-x-auto flex justify-center">
+    <section className="book-list my-6 overflow-x-auto flex justify-center">
       <table className="table w-48">
         <thead>
           <tr>

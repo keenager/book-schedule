@@ -1,4 +1,4 @@
-export default function ScheduleGoal({
+export default function Plan({
   totalPage,
   dailyPage,
 }: {

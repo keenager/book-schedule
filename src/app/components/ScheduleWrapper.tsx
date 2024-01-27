@@ -1,13 +1,13 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { DataType, PlanType } from "../types/scheduleTypes";
+import { initialSchedule, scheduleReducer } from "../utils/reducer";
+import BookList from "./BookList";
 import ScheduleForm from "./ScheduleForm";
-import ScheduleGoal from "./ScheduleGoal";
+import Plan from "./Plan";
 import TodayDone from "./TodayDone";
 import ScheduleDetail from "./ScheduleDetail";
-import { createSchedule } from "../utils/scheduleUtils";
-import BookList from "./BookList";
-import { Schedule } from "../models/scheduleModels";
+import PlanAndDone from "./PlanAndDone";
 
 export const blankPlan: PlanType = {
   title: "",
@@ -22,15 +22,10 @@ export default function ScheduleWrapper() {
   const isValidPlan = title.length > 0 && totalPage > 0 && dailyPage > 0;
 
   const [savedBooks, setSavedBooks] = useState<string[]>([]);
-  const [loadedList, setLoadedList] = useState<Schedule[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  let scheduleList: Schedule[] = [];
-
-  if (isLoading) {
-    scheduleList = loadedList;
-  } else {
-    scheduleList = createSchedule(plan);
-  }
+  const [scheduleList, setScheduleList] = useReducer(
+    scheduleReducer,
+    initialSchedule
+  );
 
   const saveHandler = () => {
     const prev = JSON.parse(localStorage.getItem("bookSchedule") ?? "{}");
@@ -68,32 +63,25 @@ export default function ScheduleWrapper() {
         <BookList
           list={savedBooks}
           updatePlan={setPlan}
-          updateList={setLoadedList}
-          updateLoading={setIsLoading}
+          updateList={setScheduleList}
           loadBooks={loadBooks}
         />
       )}
       <ScheduleForm
         plan={plan}
         updatePlan={setPlan}
-        updateLoading={setIsLoading}
+        updateList={setScheduleList}
       />
       {isValidPlan && (
         <>
-          <div className="my-3 flex gap-3">
-            <div className="hidden sm:block sm:basis-1/3"></div>
-            <div className="shrink flex justify-center basis-1/2 sm:basis-1/3">
-              <ScheduleGoal totalPage={totalPage} dailyPage={dailyPage} />
-            </div>
-            <div className="flex place-content-end basis-1/2 sm:basis-1/3">
-              <TodayDone
-                plan={plan}
-                list={scheduleList}
-                updateList={setLoadedList}
-                updateLoading={setIsLoading}
-              />
-            </div>
-          </div>
+          <PlanAndDone>
+            <Plan totalPage={totalPage} dailyPage={dailyPage} />
+            <TodayDone
+              plan={plan}
+              list={scheduleList}
+              updateList={setScheduleList}
+            />
+          </PlanAndDone>
           <ScheduleDetail list={scheduleList} />
           <div className="flex justify-end">
             <button

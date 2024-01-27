@@ -21,3 +21,9 @@ export type ScheduleObjType = {
   pagePlanModified: number | undefined;
   pageDone: number | undefined;
 };
+
+export type ActionType = {
+  type: "create" | "load";
+  plan?: PlanType;
+  schedules?: Schedule[];
+};
