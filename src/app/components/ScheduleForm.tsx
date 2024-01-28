@@ -1,17 +1,15 @@
 "use client";
 
-import { ChangeEvent, Dispatch, SetStateAction, useReducer } from "react";
+import { ChangeEvent, Dispatch, useReducer } from "react";
 import { ActionType, PlanType } from "../types/scheduleTypes";
 import FormInput from "./FormInput";
 import RadioButton from "./RadioButton";
 
 export default function ScheduleForm({
   plan,
-  updatePlan,
   updateList,
 }: {
   plan: PlanType;
-  updatePlan: Dispatch<SetStateAction<PlanType>>;
   updateList: Dispatch<ActionType>;
 }) {
   const [dateMode, toggleMode] = useReducer((prev: boolean) => {
@@ -22,38 +20,15 @@ export default function ScheduleForm({
     e.preventDefault();
     const myForm = document.getElementById("myForm")! as HTMLFormElement;
     const formData = new FormData(myForm);
-    const temp = Object.fromEntries(formData);
+    const formDataObj = Object.fromEntries(formData);
 
-    const startDate = new Date().toISOString().split("T")[0];
-    const endDate = temp.endDate?.toString();
-    const period =
-      (new Date(endDate).getTime() - new Date(startDate).getTime()) /
-        1000 /
-        60 /
-        60 /
-        24 +
-      1;
-    const totalPage = Number(temp.totalPage);
-    const dailyPage = dateMode
-      ? Math.ceil(totalPage / period)
-      : Number(temp.dailyPage);
-
-    const plan: PlanType = {
-      title: temp.title.toString(),
-      totalPage,
-      dailyPage,
-      startDate,
-      endDate,
-    };
-    console.log(plan);
-    updatePlan(plan);
-    updateList({ type: "create", plan });
+    updateList({ type: "create", formDataObj });
   };
 
   const changeHandler = (name: string, e: ChangeEvent<HTMLInputElement>) => {
     let value: string | number = e.currentTarget.value;
     if (name === "totalPage" || name === "dailyPage") value = +value;
-    updatePlan({ ...plan, [name]: value });
+    updateList({ type: "updatePlan", plan: { ...plan, [name]: value } });
   };
 
   return (
@@ -86,7 +61,7 @@ export default function ScheduleForm({
           label="총 페이지"
           type="number"
           name="totalPage"
-          value={plan.totalPage || undefined}
+          value={plan.totalPage || ""}
           onChange={changeHandler.bind(null, "totalPage")}
         />
         {dateMode ? (
@@ -94,7 +69,7 @@ export default function ScheduleForm({
             label="언제까지"
             type="date"
             name="endDate"
-            value={plan.endDate || undefined}
+            value={plan.endDate || ""}
             onChange={changeHandler.bind(null, "endDate")}
           />
         ) : (
@@ -102,7 +77,7 @@ export default function ScheduleForm({
             label="하루 읽을 페이지"
             type="number"
             name="dailyPage"
-            value={plan.dailyPage || undefined}
+            value={plan.dailyPage || ""}
             onChange={changeHandler.bind(null, "dailyPage")}
           />
         )}

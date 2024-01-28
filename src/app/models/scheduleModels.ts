@@ -1,3 +1,5 @@
+import { PlanType } from "../types/scheduleTypes";
+
 export class Schedule {
   _date: string;
   _pagePlanOrigin: number | undefined;
@@ -48,3 +50,20 @@ export class Schedule {
     };
   }
 }
+
+export const blankPlan: PlanType = {
+  title: "",
+  totalPage: 0,
+  dailyPage: 0,
+  startDate: "",
+};
+
+export const initialState: {
+  bookList: string[];
+  plan: PlanType;
+  scheduleList: Schedule[];
+} = {
+  bookList: [],
+  plan: blankPlan,
+  scheduleList: [],
+};

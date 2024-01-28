@@ -12,7 +12,7 @@ export type DataType = {
   [title: string]: {
     totalPage: string;
     dailyPage: string;
-    schedules: Schedule[];
+    scheduleList: Schedule[];
   };
 };
 
@@ -23,8 +23,35 @@ export type ScheduleObjType = {
   pageDone: number | undefined;
 };
 
-export type ActionType = {
-  type: "create" | "load";
-  plan?: PlanType;
-  schedules?: Schedule[];
-};
+export type ActionType =
+  | {
+      type: "create";
+      formDataObj: {
+        [k: string]: FormDataEntryValue;
+      };
+    }
+  | {
+      type: "save";
+      // plan: PlanType;
+      scheduleList: Schedule[];
+    }
+  | {
+      type: "loadBookList";
+      bookList: string[];
+    }
+  | {
+      type: "loadScheduleList";
+      title: string;
+    }
+  | {
+      type: "updatePlan";
+      plan: PlanType;
+    }
+  | {
+      type: "update";
+      pageDone: number;
+    }
+  | {
+      type: "delete";
+      title: string;
+    };
