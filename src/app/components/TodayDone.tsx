@@ -12,7 +12,7 @@ export default function TodayDone({
   list: Schedule[];
   updateList: Dispatch<ActionType>;
 }) {
-  const todayStr = new Date().toLocaleDateString();
+  const todayStr = new Date().toISOString().split("T")[0];
   const recalc = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // page validation

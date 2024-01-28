@@ -8,7 +8,9 @@ export const createSchedule = ({ totalPage, dailyPage }: PlanType) => {
 
   while (page < totalPage + dailyPage) {
     if (page > totalPage) page = totalPage;
-    result.push(new Schedule(date.toLocaleDateString(), page, page, undefined));
+    result.push(
+      new Schedule(date.toISOString().split("T")[0], page, page, undefined)
+    );
     date.setDate(date.getDate() + 1);
     page += dailyPage;
   }
@@ -68,7 +70,7 @@ export const updateSchedule = (
     // 새 배열에 추가
     newSubList.push(
       new Schedule(
-        date.toLocaleDateString(),
+        date.toISOString().split("T")[0],
         pagePlanOrigin,
         pagePlanModified,
         undefined

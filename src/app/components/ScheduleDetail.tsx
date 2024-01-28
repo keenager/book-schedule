@@ -27,7 +27,7 @@ export default function ScheduleDetail({ list }: { list: Schedule[] }) {
 
 function ScheduleItem({ data, idx }: { data: Schedule; idx: number }) {
   const { date, pagePlanOrigin, pagePlanModified, pageDone } = data;
-  const isToday = date === new Date().toLocaleDateString();
+  const isToday = date === new Date().toISOString().split("T")[0];
   const isGood = pagePlanModified && pageDone && pagePlanModified <= pageDone;
   const isBad = pagePlanModified && pageDone && pagePlanModified > pageDone;
   const bgColor = isGood ? "bg-green-500" : isBad ? "bg-red-500" : "";
