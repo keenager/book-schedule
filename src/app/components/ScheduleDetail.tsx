@@ -4,7 +4,7 @@ export default function ScheduleDetail({ list }: { list: Schedule[] }) {
   return (
     <section className="schedule-detail my-3">
       <div className="schedule-table my-3 overflow-x-auto">
-        <table className="table table-zebra">
+        <table className="table table-zebra text-center">
           <thead>
             <tr>
               <th></th>
@@ -27,14 +27,17 @@ export default function ScheduleDetail({ list }: { list: Schedule[] }) {
 
 function ScheduleItem({ data, idx }: { data: Schedule; idx: number }) {
   const { date, pagePlanOrigin, pagePlanModified, pageDone } = data;
-
+  const isToday = date === new Date().toLocaleDateString();
+  const isGood = pagePlanModified && pageDone && pagePlanModified <= pageDone;
+  const isBad = pagePlanModified && pageDone && pagePlanModified > pageDone;
+  const bgColor = isGood ? "bg-green-500" : isBad ? "bg-red-500" : "";
   return (
-    <tr>
-      <th>{idx + 1}</th>
+    <tr className={isToday ? "bg-blue-400" : ""}>
+      <th className="rounded-l-lg">{idx + 1}</th>
       <td>{date}</td>
       <td>{pagePlanOrigin}</td>
       <td>{pagePlanModified}</td>
-      <td>{pageDone}</td>
+      <td className={`rounded-r-lg ${bgColor}`}>{pageDone}</td>
     </tr>
   );
 }
