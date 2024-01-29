@@ -73,6 +73,14 @@ export const scheduleReducer = (
 
     case "update":
       const todayStr = new Date().toISOString().split("T")[0];
+      const completeDay = state.scheduleList.findLast(
+        (schedule) => schedule.pageDone === state.plan.totalPage
+      )?.date;
+      if (completeDay && new Date(todayStr) > new Date(completeDay)) {
+        alert("이미 완료한 스케줄입니다.");
+        return state;
+      }
+
       const pageDone =
         action.pageDone > state.plan.totalPage
           ? state.plan.totalPage
@@ -85,6 +93,7 @@ export const scheduleReducer = (
         alert("전날보다 더 앞 페이지를 입력할 수 없습니다.");
         return state;
       }
+
       const updatedSchedule = updateSchedule(
         state.plan,
         state.scheduleList,
