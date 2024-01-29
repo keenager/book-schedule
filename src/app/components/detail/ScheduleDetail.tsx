@@ -1,4 +1,4 @@
-import { Schedule } from "../models/scheduleModels";
+import { Schedule } from "../../models/scheduleModels";
 
 export default function ScheduleDetail({ list }: { list: Schedule[] }) {
   return (

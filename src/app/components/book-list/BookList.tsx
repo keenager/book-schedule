@@ -1,5 +1,5 @@
 import { Dispatch } from "react";
-import { ActionType } from "../types/scheduleTypes";
+import { ActionType } from "../../types/scheduleTypes";
 
 export default function BookList({
   savedBooks,

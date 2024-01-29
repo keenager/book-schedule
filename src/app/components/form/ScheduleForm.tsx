@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, Dispatch, useReducer } from "react";
-import { ActionType, PlanType } from "../types/scheduleTypes";
+import { ActionType, PlanType } from "../../types/scheduleTypes";
 import FormInput from "./FormInput";
 import RadioButton from "./RadioButton";
 

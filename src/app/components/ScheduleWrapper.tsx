@@ -3,12 +3,12 @@ import { useEffect, useReducer } from "react";
 import { DataType } from "../types/scheduleTypes";
 import { initialState } from "../models/scheduleModels";
 import { scheduleReducer } from "../utils/reducer";
-import BookList from "./BookList";
-import ScheduleForm from "./ScheduleForm";
-import Plan from "./Plan";
-import TodayDone from "./TodayDone";
-import ScheduleDetail from "./ScheduleDetail";
-import PlanAndDone from "./PlanAndDone";
+import BookList from "./book-list/BookList";
+import ScheduleForm from "./form/ScheduleForm";
+import Plan from "./plan-done/Plan";
+import TodayDone from "./plan-done/TodayDone";
+import ScheduleDetail from "./detail/ScheduleDetail";
+import PlanAndDone from "./plan-done/PlanAndDone";
 
 export default function ScheduleWrapper() {
   const [{ bookList, plan, scheduleList }, dispatch] = useReducer(
